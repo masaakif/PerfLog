@@ -73,6 +73,12 @@ namespace PerfLog
             {
                 Console.WriteLine(DateTime.Now.ToLongTimeString()); 
                 pm.output(args[0]);
+
+                if (intval <= 0)
+                {
+                    break;
+                }
+
                 System.Threading.Thread.Sleep(intval);
             }
         }
