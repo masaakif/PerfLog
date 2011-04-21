@@ -66,11 +66,10 @@ namespace PerfLog
             mc = new ManagementClass("Win32_Processor");
             foreach (ManagementObject mo in mc.GetInstances())
             {
-                msg += "Architecture = " + architecture[(ushort)mo["Architecture"]] + " ";
-                msg += String.Format("({0} Cores)\n", mo["NumberOfCores"]);
-                msg += String.Format("Family = {0}\n", family[(ushort)mo["Family"]]);
+                msg += String.Format("{0}, {1}MHz, {2} cores\n", mo["Name"], mo["CurrentClockSpeed"], mo["NumberOfCores"]);
+                msg += "Architecture/Family = " + architecture[(ushort)mo["Architecture"]] + " ";
+                msg += String.Format("{0}\n", family[(ushort)mo["Family"]]);
                 msg += "Caption = " + mo["Caption"] + "\n";
-                msg += String.Format("Clock = {0} MHz\n", mo["CurrentClockSpeed"]);
                 msg += String.Format("DataWidth = {0} bits", mo["DataWidth"]);
 
             }
@@ -159,10 +158,9 @@ namespace PerfLog
         static void Main(string[] args)
         {
             PCInfo pi = new PCInfo();
-            Console.WriteLine(pi.showSpec());
-            Console.WriteLine("--------------------");
-            Console.Write(pi.showDriveInfo());
 
+            String pcspec = pi.showSpec() + "\n--------------------\n" + pi.showDriveInfo();
+            Console.WriteLine(pcspec);
             
             if (args.Count() == 0)
             {
@@ -185,6 +183,7 @@ namespace PerfLog
                 else if (-1 < arg.IndexOf("-O"))
                 {
                     ofile = arg.Substring(3);
+                    File.AppendAllText(ofile, pcspec + "\n");
                 }
                 else
                 {
